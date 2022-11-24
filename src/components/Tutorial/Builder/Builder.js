@@ -273,6 +273,7 @@ class Builder extends Component {
     } else {
       // export steps without attribute 'url'
       var steps = this.props.steps;
+      var length = steps.length;
       var newTutorial = new FormData();
       newTutorial.append("title", this.props.title);
       newTutorial.append("difficulty", this.props.difficulty);
@@ -299,11 +300,28 @@ class Builder extends Component {
             newTutorial.append(`steps[${i}][hardware][${j}]`, hardware);
           });
         }
+        if (i === length-1  && step.finalpage) {
+          newTutorial.append(`steps[${i}][finalpage]`, step.finalpage);
+          newTutorial.append(`steps[${i}][samplesolutions]`, step.samplesolutions);
+          newTutorial.append(`steps[${i}][furthertutorials]`, step.furthertutorials);
+        }
+        // if (i === length-1  && step.type === "instruction" && step.samplesolutions === true) {
+        //   var solutions = [];
+        //   steps.forEach((step) => {
+        //     if (step.type === "task") {
+        //       solutions.push(step)
+        //     }
+        //   });
+        //   newTutorial.append(`steps[${i}][samplesolutions]`, solutions);
+        // }
         if (step.xml) {
           // optional
           newTutorial.append(`steps[${i}][xml]`, step.xml);
         }
       });
+      for (const pair of newTutorial.entries()) {
+        console.log(`${pair[0]}, ${pair[1]}`);
+      }
       return newTutorial;
     }
   };

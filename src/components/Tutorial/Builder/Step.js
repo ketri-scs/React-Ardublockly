@@ -29,6 +29,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import MarkdownEditor from "./MarkdownEditor";
+import FinalPageOptions from "./FinalPageOptions";
 
 const styles = (theme) => ({
   button: {
@@ -64,12 +65,21 @@ class Step extends Component {
           marginBottom: "20px",
         }}
       >
-        <Typography
-          variant="h6"
-          style={{ marginBottom: "10px", marginLeft: "4px" }}
-        >
-          Schritt {index + 1}
-        </Typography>
+        { !this.props.step.finalpage ? (
+          <Typography
+            variant="h6"
+            style={{ marginBottom: "10px", marginLeft: "4px" }}
+          >
+            Schritt {index + 1}
+          </Typography>
+        ) : (
+          <Typography
+            variant="h6"
+            style={{ marginBottom: "10px", marginLeft: "4px" }}
+          >
+            Abschlussseite
+          </Typography>
+        )}
         <div style={{ display: "flex", position: "relative" }}>
           <div
             style={{
@@ -80,60 +90,66 @@ class Step extends Component {
               bottom: "10px",
             }}
           >
-            <Tooltip title="Schritt hinzufügen" arrow>
-              <IconButton
-                className={this.props.classes.button}
-                style={index === 0 ? {} : { marginBottom: "5px" }}
-                onClick={() => this.props.addStep(index + 1)}
-              >
-                <FontAwesomeIcon icon={faPlus} size="xs" />
-              </IconButton>
-            </Tooltip>
-            {index !== 0 ? (
+            {!this.props.step.finalpage ? (
               <div>
-                <Tooltip
-                  title={`Schritt ${index + 1} nach oben schieben`}
-                  arrow
-                >
+                <Tooltip title="Schritt hinzufügen" arrow>
                   <IconButton
-                    disabled={index < 2}
                     className={this.props.classes.button}
-                    style={{ marginBottom: "5px" }}
-                    onClick={() => this.props.changeStepIndex(index, index - 1)}
+                    style={index === 0 ? {} : { marginBottom: "5px" }}
+                    onClick={() => this.props.addStep(index + 1)}
                   >
-                    <FontAwesomeIcon icon={faAngleDoubleUp} size="xs" />
+                    <FontAwesomeIcon icon={faPlus} size="xs" />
                   </IconButton>
                 </Tooltip>
-                <Tooltip
-                  title={`Schritt ${index + 1} nach unten schieben`}
-                  arrow
-                >
-                  <IconButton
-                    disabled={index === steps.length - 1}
-                    className={this.props.classes.button}
-                    style={{ marginBottom: "5px" }}
-                    onClick={() => this.props.changeStepIndex(index, index + 1)}
-                  >
-                    <FontAwesomeIcon icon={faAngleDoubleDown} size="xs" />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title={`Schritt ${index + 1} löschen`} arrow>
-                  <IconButton
-                    disabled={index === 0}
-                    className={clsx(
-                      this.props.classes.button,
-                      this.props.classes.delete
-                    )}
-                    onClick={() => this.props.removeStep(index)}
-                  >
-                    <FontAwesomeIcon icon={faTrash} size="xs" />
-                  </IconButton>
-                </Tooltip>
+                {index !== 0 ? (
+                  <div>
+                    <Tooltip
+                      title={`Schritt ${index + 1} nach oben schieben`}
+                      arrow
+                    >
+                      <IconButton
+                        disabled={index < 2}
+                        className={this.props.classes.button}
+                        style={{ marginBottom: "5px" }}
+                        onClick={() => this.props.changeStepIndex(index, index - 1)}
+                      >
+                        <FontAwesomeIcon icon={faAngleDoubleUp} size="xs" />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip
+                      title={`Schritt ${index + 1} nach unten schieben`}
+                      arrow
+                    >
+                      <IconButton
+                        disabled={index >= this.props.steps.length - 2}
+                        className={this.props.classes.button}
+                        style={{ marginBottom: "5px" }}
+                        onClick={() => this.props.changeStepIndex(index, index + 1)}
+                      >
+                        <FontAwesomeIcon icon={faAngleDoubleDown} size="xs" />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title={`Schritt ${index + 1} löschen`} arrow>
+                      <IconButton
+                        disabled={index === 0 && index === steps.length - 1}
+                        className={clsx(
+                          this.props.classes.button,
+                          this.props.classes.delete
+                        )}
+                        onClick={() => this.props.removeStep(index)}
+                      >
+                        <FontAwesomeIcon icon={faTrash} size="xs" />
+                      </IconButton>
+                    </Tooltip>
+                  </div>
+                ) : null}
               </div>
             ) : null}
           </div>
           <div style={{ width: "100%", marginLeft: "54px" }}>
-            <StepType value={this.props.step.type} index={index} />
+            {!this.props.step.finalpage ? (
+              <StepType value={this.props.step.type} index={index} />
+            ) : null}
             <Textfield
               value={this.props.step.headline}
               property={"headline"}
@@ -178,12 +194,21 @@ class Step extends Component {
                 />
               </div>
             ) : null}
-            <BlocklyExample
-              value={this.props.step.xml}
-              index={index}
-              task={this.props.step.type === "task"}
-              error={this.props.error.steps[index].xml ? true : false}
-            />
+            { !this.props.step.finalpage ? (
+              <BlocklyExample
+                value={this.props.step.xml}
+                index={index}
+                task={this.props.step.type === "task"}
+                error={this.props.error.steps[index].xml ? true : false}
+              />
+            ) : (
+              <FinalPageOptions
+                steps={steps}
+                checkedSampleSolutions={this.props.step.samplesolutions}
+                checkedFurtherTutorials={this.props.step.furtherTutorials}
+                index={index}
+              />
+            )}
           </div>
         </div>
       </div>

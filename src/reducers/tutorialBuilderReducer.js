@@ -33,9 +33,18 @@ const initialState = {
       hardware: [],
       requirements: [],
     },
+    {
+      id: 2,
+      type: "instruction",
+      headline: "",
+      text: "",
+      finalpage: true,
+      samplesolutions: false,
+      furtherTutorials: false,
+    },
   ],
   error: {
-    steps: [{}],
+    steps: [{},{}],
   },
 };
 

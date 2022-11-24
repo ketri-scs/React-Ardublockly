@@ -301,12 +301,20 @@ export const resetTutorial = () => (dispatch, getState) => {
       hardware: [],
       requirements: [],
     },
+    {
+      id: 2,
+      type: "instruction",
+      headline: "",
+      text: "",
+      finalpage: true,
+      solutions: [],
+    },
   ];
   dispatch(tutorialSteps(steps));
   dispatch({
     type: BUILDER_ERROR,
     payload: {
-      steps: [{}],
+      steps: [{}, {}],
     },
   });
 };
