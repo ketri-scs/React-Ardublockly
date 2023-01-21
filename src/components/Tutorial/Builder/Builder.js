@@ -259,7 +259,7 @@ class Builder extends Component {
     window.scrollTo(0, 0);
   };
 
-  submit = () => {
+  submit = () => {;
     var isError = this.props.checkError();
     if (isError) {
       this.setState({
@@ -273,6 +273,7 @@ class Builder extends Component {
     } else {
       // export steps without attribute 'url'
       var steps = this.props.steps;
+      // console.log(steps);
       var length = steps.length;
       var newTutorial = new FormData();
       newTutorial.append("title", this.props.title);
@@ -300,20 +301,22 @@ class Builder extends Component {
             newTutorial.append(`steps[${i}][hardware][${j}]`, hardware);
           });
         }
-        if (i === length-1  && step.finalpage) {
-          newTutorial.append(`steps[${i}][finalpage]`, step.finalpage);
+        if (i === length-1  && step.type === "finalpage") {
           newTutorial.append(`steps[${i}][samplesolutions]`, step.samplesolutions);
           newTutorial.append(`steps[${i}][furthertutorials]`, step.furthertutorials);
+
+          if (step.samplesolutions === true) {
+            var solutionindex = 0;
+            steps.forEach((solutionstep) => {
+              if (solutionstep.type === "task"&& solutionstep.xml) {
+                newTutorial.append(`steps[${i}][solutions][${solutionindex}][type]`, solutionstep.type);
+                newTutorial.append(`steps[${i}][solutions][${solutionindex}][headline]`, solutionstep.headline);
+                newTutorial.append(`steps[${i}][solutions][${solutionindex}][xml]`, solutionstep.xml);
+                solutionindex++;
+              }
+            });
+          }
         }
-        // if (i === length-1  && step.type === "instruction" && step.samplesolutions === true) {
-        //   var solutions = [];
-        //   steps.forEach((step) => {
-        //     if (step.type === "task") {
-        //       solutions.push(step)
-        //     }
-        //   });
-        //   newTutorial.append(`steps[${i}][samplesolutions]`, solutions);
-        // }
         if (step.xml) {
           // optional
           newTutorial.append(`steps[${i}][xml]`, step.xml);

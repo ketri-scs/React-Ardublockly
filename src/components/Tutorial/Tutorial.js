@@ -17,6 +17,7 @@ import StepperHorizontal from "./StepperHorizontal";
 import StepperVertical from "./StepperVertical";
 import Instruction from "./Instruction";
 import Assessment from "./Assessment";
+import FinalPage from "./FinalPage";
 import NotFound from "../NotFound";
 import * as Blockly from "blockly";
 import { detectWhitespacesAndReturnReadableResult } from "../../helpers/whitespace";
@@ -74,7 +75,9 @@ class Tutorial extends Component {
           (() => {
             var tutorial = this.props.tutorial;
             var steps = this.props.tutorial.steps;
+            console.log(steps)
             var step = steps[this.props.activeStep];
+            console.log(step)
             var name = `${detectWhitespacesAndReturnReadableResult(
               tutorial.title
             )}_${detectWhitespacesAndReturnReadableResult(step.headline)}`;
@@ -107,8 +110,10 @@ class Tutorial extends Component {
                     {step ? (
                       step.type === "instruction" ? (
                         <Instruction step={step} />
-                      ) : (
+                      ) : step.type === "task" ? (
                         <Assessment step={step} name={name} />
+                      ) : (
+                        <FinalPage step={step} />
                       ) // if step.type === 'assessment'
                     ) : null}
 

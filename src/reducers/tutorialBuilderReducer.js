@@ -35,12 +35,12 @@ const initialState = {
     },
     {
       id: 2,
-      type: "instruction",
+      type: "finalpage",
       headline: "",
       text: "",
-      finalpage: true,
       samplesolutions: false,
-      furtherTutorials: false,
+      solutions: [],
+      furthertutorials: false,
     },
   ],
   error: {

@@ -303,11 +303,12 @@ export const resetTutorial = () => (dispatch, getState) => {
     },
     {
       id: 2,
-      type: "instruction",
+      type: "finalpage",
       headline: "",
       text: "",
-      finalpage: true,
+      samplesolutions: false,
       solutions: [],
+      furthertutorials: false,
     },
   ];
   dispatch(tutorialSteps(steps));

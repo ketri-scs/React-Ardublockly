@@ -31,6 +31,9 @@ const styles = (theme) => ({
     width: "24px",
     height: "24px",
   },
+  stepIconSuccess: {
+    borderColor: theme.palette.primary.main,
+  },
   stepIconLargeSuccess: {
     borderColor: theme.palette.primary.main,
   },
@@ -130,12 +133,25 @@ class StepperVertical extends Component {
                                     "stepIconLarge" + taskStatus
                                   ]
                                 )
-                            : i === activeStep
-                            ? clsx(
-                                this.props.classes.stepIcon,
-                                this.props.classes.stepIconActiveOther
-                              )
-                            : clsx(this.props.classes.stepIcon),
+                            : step.type === "instruction"
+                              ? i === activeStep
+                                ? clsx(
+                                    this.props.classes.stepIcon,
+                                    this.props.classes.stepIconActiveOther
+                                  )
+                                : clsx(this.props.classes.stepIcon)
+                              : step.type === "finalpage"
+                                ? i === activeStep
+                                  ? clsx(
+                                    this.props.classes.stepIcon,
+                                    this.props.classes.stepIconSuccess,
+                                    this.props.classes.stepIconActiveSuccess
+                                    )
+                                  : clsx(
+                                    this.props.classes.stepIcon,
+                                    this.props.classes.stepIconSuccess
+                                  )
+                                : null,
                       }}
                     ></StepLabel>
                   </div>

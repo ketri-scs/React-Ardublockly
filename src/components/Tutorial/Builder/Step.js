@@ -56,6 +56,8 @@ class Step extends Component {
   render() {
     var index = this.props.index;
     var steps = this.props.steps;
+    // console.log(this.props.steps);
+    // console.log(this.props.step);
     return (
       <div
         style={{
@@ -65,7 +67,7 @@ class Step extends Component {
           marginBottom: "20px",
         }}
       >
-        { !this.props.step.finalpage ? (
+        {this.props.step.type !== "finalpage" ? (
           <Typography
             variant="h6"
             style={{ marginBottom: "10px", marginLeft: "4px" }}
@@ -90,7 +92,7 @@ class Step extends Component {
               bottom: "10px",
             }}
           >
-            {!this.props.step.finalpage ? (
+            {this.props.step.type !== "finalpage" ? (
               <div>
                 <Tooltip title="Schritt hinzufügen" arrow>
                   <IconButton
@@ -147,7 +149,7 @@ class Step extends Component {
             ) : null}
           </div>
           <div style={{ width: "100%", marginLeft: "54px" }}>
-            {!this.props.step.finalpage ? (
+            {this.props.step.type !== "finalpage" ? (
               <StepType value={this.props.step.type} index={index} />
             ) : null}
             <Textfield
@@ -194,7 +196,7 @@ class Step extends Component {
                 />
               </div>
             ) : null}
-            { !this.props.step.finalpage ? (
+            {this.props.step.type !== "finalpage" ? (
               <BlocklyExample
                 value={this.props.step.xml}
                 index={index}
@@ -205,7 +207,7 @@ class Step extends Component {
               <FinalPageOptions
                 steps={steps}
                 checkedSampleSolutions={this.props.step.samplesolutions}
-                checkedFurtherTutorials={this.props.step.furtherTutorials}
+                checkedFurtherTutorials={this.props.step.furthertutorials}
                 index={index}
               />
             )}
