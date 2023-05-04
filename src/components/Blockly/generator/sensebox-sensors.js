@@ -753,3 +753,58 @@ if (time_startsps > time_actualsps + intervalsps) {
   var code = `m.mc_${dropdown_name}`;
   return [code, Blockly.Arduino.ORDER_ATOMIC];
 };
+
+
+/**
+ * GPS Module
+ *
+ */
+
+Blockly.Arduino.sensebox_gps_bn880 = function () {
+  var dropdown = this.getFieldValue("dropdown");
+  var serial = this.getFieldValue("serial");
+  Blockly.Arduino.libraries_["library_senseBoxIO"] = "#include <senseBoxIO.h>";
+  Blockly.Arduino.libraries_["tinygps_library"] =
+    "#include <TinyGPSPlus.h> // http://librarymanager/All#SparkFun_u-blox_GNSS_Arduino_Library";
+  Blockly.Arduino.definitions_["TinyGPS"] = "TinyGPSPlus gps;";
+  Blockly.Arduino.setupCode_["init_tinygps"] = `
+${serial}.begin(9600);  // BN880
+while (gps.location.lat() == 0.0 && gps.location.lng() == 0.0);
+  `
+  var code = "";
+  switch (dropdown) {
+    case "latitude":
+      code = "gps.location.lat()";
+      break;
+    case "longitude":
+      code = "gps.location.lng()";
+      break;
+    case "altitude":
+      code = "gps.altitude.meters()";
+      break;
+    case "timestamp":
+      Blockly.Arduino.variables_["define_tsBuffer"] = `char tsBuffer[21];`
+      Blockly.Arduino.codeFunctions_["getTimeStamp()"] = `
+      char *getTimeStamp()
+      {
+        memset(tsBuffer, 0, sizeof(tsBuffer));
+        if ((gps.date.isValid() == true) && (gps.time.isValid() == true))
+        {
+          sprintf(tsBuffer, "%04d-%02d-%02dT%02d:%02d:%02dZ",
+                  gps.date.year(), gps.date.month(), gps.date.day(), gps.time.hour(), gps.time.minute(), gps.time.second());
+        }
+        return tsBuffer;
+      }
+      `;
+      code = "getTimeStamp()";
+      break;
+    default:
+      code = "";
+  }
+  return [code, Blockly.Arduino.ORDER_ATOMIC];
+};
+
+Blockly.Arduino.sensebox_gps_isValid = function () {
+  var code ="gps.location.isValid()";
+  return [code, Blockly.Arduino.ORDER_ATOMIC];
+};

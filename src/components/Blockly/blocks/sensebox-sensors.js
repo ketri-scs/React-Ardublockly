@@ -583,3 +583,49 @@ Blockly.Blocks["sensebox_sensor_dps310"] = {
     this.setHelpUrl(Blockly.Msg.senseBox_sps30_helpurl);
   },
 };
+
+
+/**
+ * GPS Module BN880
+ *
+ */
+
+Blockly.Blocks["sensebox_gps_bn880"] = {
+  init: function () {
+    var dropdownOptions = [
+      [Blockly.Msg.senseBox_gps_lat, "latitude"],
+      [Blockly.Msg.senseBox_gps_lng, "longitude"],
+      [Blockly.Msg.senseBox_gps_alt, "altitude"],
+      [Blockly.Msg.senseBox_gps_timeStamp, "timestamp"],
+    ];
+    this.appendDummyInput().appendField("GPS Modul BN-880");
+    this.appendDummyInput()
+    .setAlign(Blockly.ALIGN_RIGHT)
+    .appendField(Blockly.Msg.senseBox_value)
+    .appendField(new Blockly.FieldDropdown(dropdownOptions), "dropdown");
+    this.appendDummyInput()
+      .setAlign(Blockly.ALIGN_RIGHT)
+      .appendField("Serial Port:")
+      .appendField(
+        new Blockly.FieldDropdown(
+          selectedBoard().serialSensors),
+        "serial"
+      );
+    if (this.getFieldValue("dropdown") == "timestamp") {
+      this.setOutput(true, Types.CHARACTER.typeName);
+    } else {
+    this.setOutput(true, Types.NUMBER.typeName);
+    }
+    this.setColour(getColour().sensebox);
+    this.setTooltip(Blockly.Msg.senseBox_gps_tooltip);
+  },
+};
+
+Blockly.Blocks["sensebox_gps_isValid"] = {
+  init: function () {
+    this.appendDummyInput().appendField("GPS Modul is valid");
+    this.setOutput(true, Types.BOOLEAN.typeName);
+    this.setColour(getColour().sensebox);
+    this.setTooltip(Blockly.Msg.senseBox_gps_tooltip);
+  },
+};

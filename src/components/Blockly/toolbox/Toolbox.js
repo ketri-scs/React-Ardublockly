@@ -640,6 +640,8 @@ class Toolbox extends React.Component {
           >
             <Block type="init_serial_monitor"></Block>
             <Block type="print_serial_monitor"></Block>
+            <Block type="sensebox_gps_bn880" />
+            <Block type="sensebox_gps_isValid" />
           </Category>
           <Category name={Blockly.Msg.toolbox_io} colour={getColour().io}>
             <Block type="io_digitalwrite"></Block>

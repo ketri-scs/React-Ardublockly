@@ -104,4 +104,4 @@ export const getCompatibleTypes = (type) => {
     return compatibleTypes[type];
 };
 
-export const VARIABLE_TYPES = [['SHORT_NUMBER', 'char'], ['NUMBER', 'int'], ['DECIMAL', 'long'], ['TEXT', 'String'], ['CHARACTER', 'char'], ['BOOLEAN', 'boolean'], ['NULL', 'void'], ['UNDEF', 'undefined']];
+export const VARIABLE_TYPES = [['NUMBER', 'int'], ['DECIMAL', 'long'], ['TEXT', 'String'], ['CHARACTER', 'char'], ['BOOLEAN', 'boolean'], ['NULL', 'void'], ['UNDEF', 'undefined']];
