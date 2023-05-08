@@ -611,11 +611,8 @@ Blockly.Blocks["sensebox_gps_bn880"] = {
           selectedBoard().serialSensors),
         "serial"
       );
-    if (this.getFieldValue("dropdown") == "timestamp") {
-      this.setOutput(true, Types.CHARACTER.typeName);
-    } else {
-    this.setOutput(true, Types.NUMBER.typeName);
-    }
+ 
+    this.setOutput(true);
     this.setColour(getColour().sensebox);
     this.setTooltip(Blockly.Msg.senseBox_gps_tooltip);
   },
