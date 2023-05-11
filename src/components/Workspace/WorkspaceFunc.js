@@ -86,7 +86,7 @@ class WorkspaceFunc extends Component {
           (this.props.projectType === "project" ||
             this.props.projectType === "gallery") &&
           this.props.user &&
-          this.props.user.email === this.props.project.creator ? (
+         (this.props.user.email === this.props.project.creator || this.props.user.role === 'admin' ) ? (
           <DeleteProject
             project={this.props.project}
             projectType={this.props.projectType}

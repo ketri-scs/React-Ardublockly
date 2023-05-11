@@ -153,7 +153,7 @@ class ProjectHome extends Component {
                           </Typography>
                         </Link>
                         {this.props.user &&
-                          this.props.user.email === project.creator ? (
+                          (this.props.user.email === project.creator || this.props.user.role === 'admin')  ? (
                           <div>
                             <Divider
                               style={{
