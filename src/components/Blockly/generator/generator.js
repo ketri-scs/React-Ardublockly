@@ -27,14 +27,26 @@
 import * as Blockly from "blockly/core";
 
 import store from "../../../store";
+import { selectedBoard } from "../helpers/board";
 
 var ota = store.getState().general.platform
-  ? store.getState().general.platform
+  ? store.getState().general.platform &&
+    (selectedBoard().title === "MCU" || selectedBoard().title === "Mini")
   : null;
+var otaesp32 =
+  store.getState().general.platform && selectedBoard().title === "MCU-S2"
+    ? true
+    : false;
 store.subscribe(() => {
-  ota = store.getState().general.platform
-    ? store.getState().general.platform
-    : null;
+  ota =
+    store.getState().general.platform &&
+    (selectedBoard().title === "MCU" || selectedBoard().title === "Mini")
+      ? store.getState().general.platform
+      : null;
+  otaesp32 =
+    store.getState().general.platform && selectedBoard().title === "MCU-S2"
+      ? true
+      : false;
 });
 
 /**
@@ -147,8 +159,6 @@ Blockly["Arduino"].init = function (workspace) {
   //     defvars.push(Blockly['Arduino'].nameDB_.getName(devVarList[i],
   //         Blockly.Names.DEVELOPER_VARIABLE_TYPE));
   // }
-
-
 };
 
 /**
@@ -223,6 +233,27 @@ Blockly["Arduino"].finish = function (code) {
       devVariables +
       "\n" +
       "#include <SenseBoxOTA.h>" +
+      "\n" +
+      libraryCode +
+      "\n" +
+      variablesCode +
+      "\n" +
+      definitionsCode +
+      "\n" +
+      codeFunctions +
+      "\n" +
+      Blockly["Arduino"].variablesInitCode_ +
+      "\n" +
+      functionsCode +
+      "\n" +
+      setupCode +
+      "\n" +
+      loopCode;
+  } else if (otaesp32 === true) {
+    code =
+      devVariables +
+      "\n" +
+      "#include <ArduinoOTA.h>" +
       "\n" +
       libraryCode +
       "\n" +
