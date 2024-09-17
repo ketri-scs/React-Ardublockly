@@ -16,6 +16,20 @@ Blockly.Arduino['io_digitalwrite'] = function (block) {
     return code;
 };
 
+// 2024.09.17 : SCS
+Blockly.Python['io_digitalwrite'] = function(block) {
+    var pin = block.getFieldValue('PIN');
+    var stateOutput = Blockly.Python.valueToCode(block, 'STATE', Blockly.Python.ORDER_ATOMIC) || 'GPIO.LOW';
+
+    // 필요한 import와 설정 코드 추가
+    Blockly.Python.imports_['import_gpio'] = 'import RPi.GPIO as GPIO';
+    Blockly.Python.definitions_['gpio_setup_mode'] = 'GPIO.setmode(GPIO.BCM)';
+    Blockly.Python.setups_['gpio_setup_pin_' + pin] = 'GPIO.setup(' + pin + ', GPIO.OUT)';
+
+    var code = 'GPIO.output(' + pin + ', ' + stateOutput + ')\n';
+    return code; // statement block은 문자열 반환
+};
+
 /**
  * Function for reading a digital pin (X).
  * Arduino code: setup { pinMode(X, INPUT); }
@@ -94,6 +108,17 @@ Blockly.Arduino['io_analogread'] = function (block) {
 Blockly.Arduino['io_highlow'] = function (block) {
     var code = block.getFieldValue('STATE');
     return [code, Blockly.Arduino.ORDER_ATOMIC];
+};
+
+// 2024.09.17 : SCS
+Blockly.Python['io_highlow'] = function(block) {
+    var code = block.getFieldValue('STATE');
+    if (code === 'HIGH') {
+        code = 'GPIO.HIGH';
+    } else if (code === 'LOW') {
+        code = 'GPIO.LOW';
+    }
+    return [code, Blockly.Python.ORDER_ATOMIC];
 };
 
 Blockly.Arduino['io_pulsein'] = function (block) {

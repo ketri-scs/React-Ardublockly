@@ -25,6 +25,7 @@
 // https://developers.google.com/blockly/guides/create-custom-blocks/generating-code
 
 import * as Blockly from "blockly/core";
+import 'blockly/python'; // 2024.09.17 : SCS
 
 import store from "../../../store";
 
@@ -42,6 +43,9 @@ store.subscribe(() => {
  * @type !Blockly.Generator
  */
 Blockly["Arduino"] = new Blockly.Generator("Arduino");
+
+Blockly["Python"] = new Blockly.Generator('Python'); // 2024.09.17 : SCS
+//Blockly["Python"] = Blockly.Python; // 이미 정의된 Blockly.Python 사용
 
 /**
  * List of illegal variable names.
@@ -271,6 +275,81 @@ Blockly["Arduino"].finish = function (code) {
 
   return code;
 };
+
+// Python 생성기 초기화 및 finish 함수 추가
+Blockly["Python"].init = function (workspace) {
+  Blockly["Python"].imports_ = Object.create(null);
+  Blockly["Python"].definitions_ = Object.create(null);
+  Blockly["Python"].functions_ = Object.create(null);
+  Blockly["Python"].setups_ = Object.create(null);
+
+  if (!Blockly["Python"].nameDB_) {
+    Blockly["Python"].nameDB_ = new Blockly.Names(
+      Blockly["Python"].RESERVED_WORDS_
+    );
+  } else {
+    Blockly["Python"].nameDB_.reset();
+  }
+  Blockly["Python"].nameDB_.setVariableMap(workspace.getVariableMap());
+};
+
+Blockly["Python"].finish = function (code) {
+  // 필요한 코드 조각들을 결합합니다.
+  let imports = '';
+  for (const name in Blockly["Python"].imports_) {
+    imports += Blockly["Python"].imports_[name] + '\n';
+  }
+
+  let definitions = '';
+  for (const name in Blockly["Python"].definitions_) {
+    definitions += Blockly["Python"].definitions_[name] + '\n';
+  }
+
+  let setups = '';
+  for (const name in Blockly["Python"].setups_) {
+    setups += Blockly["Python"].setups_[name] + '\n';
+  }
+
+  let functions = '';
+  for (const name in Blockly["Python"].functions_) {
+    functions += Blockly["Python"].functions_[name] + '\n';
+  }
+
+  return imports + '\n' + definitions + '\n' + setups + '\n' + functions + '\n' + code;
+};
+
+// 공통 코드 생성 함수
+function generateCode(generator, workspace) {
+  generator.init(workspace);
+
+  let code = [];
+  const blocks = workspace.getTopBlocks(true);
+  for (let i = 0; i < blocks.length; i++) {
+    let blockCode = generator.blockToCode(blocks[i]);
+    if (Array.isArray(blockCode)) {
+      blockCode = blockCode[0];
+    }
+    if (blockCode) {
+      code.push(blockCode);
+    }
+  }
+
+  code = code.join('\n');
+  code = generator.finish(code);
+
+  // 임시 데이터 정리
+  delete generator.definitions_;
+  delete generator.functionNames_;
+  delete generator.imports_;
+  delete generator.setups_;
+  delete generator.libraries_;
+  delete generator.variables_;
+  generator.nameDB_.reset();
+
+  return code;
+}
+
+export { generateCode };
 
 /**
  * Naked values are top-level blocks with outputs that aren't plugged into

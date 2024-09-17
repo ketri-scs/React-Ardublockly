@@ -1,4 +1,5 @@
 import * as Blockly from 'blockly/core';
+import 'blockly/python'; // 2024.09.17 : SCS
 
 Blockly.Arduino.sensebox_led = function () {
     var dropdown_pin = this.getFieldValue('PIN');
@@ -7,6 +8,18 @@ Blockly.Arduino.sensebox_led = function () {
     var code = 'digitalWrite(' + dropdown_pin + ',' + dropdown_stat + ');\n'
     return code;
 };
+
+// 2024.09.17 : SCS
+Blockly.Python.sensebox_led = function () {
+    var pin = this.getFieldValue('PIN');
+    var state = this.getFieldValue('STAT') === 'HIGH' ? 'True' : 'False';
+  
+    Blockly.Python.definitions_['import_gpio'] = 'import RPi.GPIO as GPIO';
+    Blockly.Python.setups_['gpio_setup_' + pin] = `GPIO.setup(${pin}, GPIO.OUT)`;
+  
+    var code = `GPIO.output(${pin}, ${state})\n`;
+    return code;
+  };
 
 Blockly.Arduino.sensebox_rgb_led = function () {
     var dropdown_pin = this.getFieldValue('PIN');

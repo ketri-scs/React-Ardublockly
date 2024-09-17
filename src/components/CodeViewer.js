@@ -52,12 +52,20 @@ const AccordionDetails = withStyles((theme) => ({
 }))(MuiAccordionDetails);
 
 class CodeViewer extends Component {
-  constructor(props) {
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {
+  //     code: this.props.arduino,
+  //     changed: false,
+  //     expanded: true,
+  //     componentHeight: null,
+  //   };
+  //   this.myDiv = React.createRef();
+  // }
+  constructor(props) { // 2024.09.17 : SCS
     super(props);
     this.state = {
-      code: this.props.arduino,
-      changed: false,
-      expanded: true,
+      expanded: 'arduino', // 'arduino', 'xml', 'python' 중 하나의 값
       componentHeight: null,
     };
     this.myDiv = React.createRef();
@@ -66,6 +74,13 @@ class CodeViewer extends Component {
   componentDidMount() {
     this.setState({ componentHeight: this.myDiv.current.offsetHeight + "px" });
   }
+
+  // 2024.09.17 : SCS
+  handleChange = (panel) => (event, isExpanded) => {
+    this.setState({
+      expanded: isExpanded ? panel : false,
+    });
+  };
 
   componentDidUpdate(prevProps, prevState) {
     // if (this.props.arduino !== prevProps.arduino) {
@@ -105,11 +120,16 @@ class CodeViewer extends Component {
     var unequal = "<>";
     return (
       <Card style={{ height: "100%", maxHeight: "60vH" }} ref={this.myDiv}>
+
+        {/* Arduino 코드 아코디언 */}
         <Accordion
-          square={true}
-          style={{ margin: 0 }}
-          expanded={this.state.expanded}
-          onChange={this.onChange}
+          // square={true}
+          // style={{ margin: 0 }}
+          // expanded={this.state.expanded}
+          // onChange={this.onChange}
+          square
+          expanded={this.state.expanded === 'arduino'}
+          onChange={this.handleChange('arduino')}
         >
           <AccordionSummary>
             <b style={{ fontSize: "20px", marginRight: "5px", width: "35px" }}>
@@ -140,11 +160,44 @@ class CodeViewer extends Component {
             />
           </AccordionDetails>
         </Accordion>
+
+         {/* Python 코드 아코디언 */}
+         <Accordion
+          square
+          expanded={this.state.expanded === 'python'}
+          onChange={this.handleChange('python')}
+        >
+          <AccordionSummary>
+            <b style={{ fontSize: "20px", marginRight: "5px", width: "35px" }}>
+              { "{ }" }
+            </b>
+            <div style={{ margin: "auto 5px 2px 0px" }}>
+              Python
+            </div>
+          </AccordionSummary>
+          <AccordionDetails style={{ padding: 0, backgroundColor: "white" }}>
+            <MonacoEditor
+              height="80vh"
+              defaultLanguage="python"
+              value={this.props.python}
+              options={{
+                readOnly: true,
+                fontSize: "16px",
+              }}
+            />
+          </AccordionDetails>
+        </Accordion>
+        
+
+         {/* XML 코드 아코디언 */}
         <Accordion
-          square={true}
-          style={{ margin: 0 }}
-          expanded={!this.state.expanded}
-          onChange={this.onChange}
+          // square={true}
+          // style={{ margin: 0 }}
+          // expanded={!this.state.expanded}
+          // onChange={this.onChange}
+          square
+          expanded={this.state.expanded === 'xml'}
+          onChange={this.handleChange('xml')}
         >
           <AccordionSummary>
             <b style={{ fontSize: "20px", marginRight: "5px", width: "35px" }}>
@@ -169,6 +222,9 @@ class CodeViewer extends Component {
             />
           </AccordionDetails>
         </Accordion>
+
+       
+        
       </Card>
     );
   }
@@ -178,12 +234,14 @@ CodeViewer.propTypes = {
   arduino: PropTypes.string.isRequired,
   xml: PropTypes.string.isRequired,
   tooltip: PropTypes.string.isRequired,
+  python: PropTypes.string.isRequired, // 2024.09.17 : SCS
 };
 
 const mapStateToProps = (state) => ({
   arduino: state.workspace.code.arduino,
   xml: state.workspace.code.xml,
   tooltip: state.workspace.code.tooltip,
+  python: state.workspace.code.python, // 2024.09.17 : SCS
 });
 
 export default connect(mapStateToProps, null)(withWidth()(CodeViewer));

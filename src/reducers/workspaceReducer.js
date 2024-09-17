@@ -4,6 +4,7 @@ import { CHANGE_WORKSPACE, NEW_CODE, CREATE_BLOCK, MOVE_BLOCK, CHANGE_BLOCK, DEL
 const initialState = {
   code: {
     arduino: '',
+    python: '', // 2024.09.17 : SCS
     xml: ''
   },
   stats: {
@@ -21,7 +22,10 @@ export default function foo(state = initialState, action){
     case NEW_CODE:
       return {
         ...state,
-        code: action.payload
+        //code: action.payload
+        arduino: action.payload.arduino, // 2024.09.17 : SCS
+        python: action.payload.python, 
+        xml: action.payload.xml,        
       };
     case CHANGE_WORKSPACE:
       return {

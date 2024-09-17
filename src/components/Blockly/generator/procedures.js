@@ -1,5 +1,7 @@
 import * as Blockly from "blockly/core";
 
+// 2024.09.17 : SCS
+import 'blockly/python'; // 필요 시 추가
 
 /**
  * Code generator to add code into the setup() and loop() functions.
@@ -36,6 +38,35 @@ Blockly.Arduino["arduino_functions"] = function (block) {
 
   var loopBranch = statementToCodeNoTab(block, "LOOP_FUNC");
   //var loopcode = Blockly.Arduino.scrub_(block, loopBranch); No comment block
+  return loopBranch;
+};
+
+// 2024.09.17 : SCS
+Blockly.Python["arduino_functions"] = function (block) {
+  var board = window.sessionStorage.getItem("board");
+
+  if (board === "mcu" || board === "mini") {
+    Blockly.Python.definitions_['import_senseBoxIO'] = 'import senseBoxIO';
+  }
+  
+  // Edited version of Blockly.Generator.prototype.statementToCode
+  function statementToCodeNoTab(block, name) {
+    var targetBlock = block.getInputTargetBlock(name);
+    var code = Blockly.Python.blockToCode(targetBlock); // Blockly.Python 사용
+    if (typeof code != "string") {
+      throw new Error(
+        'Expecting code from statement block "' + targetBlock.type + '".'
+      );
+    }
+    return code;
+  }
+
+  var setupBranch = Blockly.Python.statementToCode(block, "SETUP_FUNC");
+  if (setupBranch) {
+    Blockly.Python.setups_["mainsetup"] = setupBranch;
+  }
+
+  var loopBranch = statementToCodeNoTab(block, "LOOP_FUNC");
   return loopBranch;
 };
 
